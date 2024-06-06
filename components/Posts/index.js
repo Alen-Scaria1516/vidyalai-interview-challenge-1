@@ -49,12 +49,22 @@ export default function Posts() {
     fetchPost();
   }, [isSmallerDevice]);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setIsLoading(true);
+    
+    try {
+      const { data: newPosts } = await axios.get('/api/v1/posts', {
+        params: { start: 0, limit: isSmallerDevice ? 5 : 10 },
+      });
+      setPosts((prevPosts)=> [...prevPosts, ...newPosts]);
 
-    setTimeout(() => {
+    } 
+    catch (error) {
+      console.error('Error Fetching More Posts:', error);      
+    }
+    finally {
       setIsLoading(false);
-    }, 3000);
+    }
   };
 
   return (
@@ -65,11 +75,13 @@ export default function Posts() {
         ))}
       </PostListContainer>
 
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <LoadMoreButton onClick={handleClick} disabled={isLoading}>
-          {!isLoading ? 'Load More' : 'Loading...'}
-        </LoadMoreButton>
-      </div>
+      {posts.length > 0 && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <LoadMoreButton onClick={handleClick} disabled={isLoading}>
+            {!isLoading ? 'Load More' : 'Loading...'}
+          </LoadMoreButton>
+        </div>
+      )}
     </Container>
   );
 }
