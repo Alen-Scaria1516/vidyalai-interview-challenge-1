@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
 import styled from '@emotion/styled';
+import axios from 'axios';
 
 const PostContainer = styled.div(() => ({
   width: '300px',
@@ -8,6 +9,38 @@ const PostContainer = styled.div(() => ({
   border: '1px solid #ccc',
   borderRadius: '5px',
   overflow: 'hidden',
+}));
+
+const UserDetailsContainer = styled.div(() => ({
+  width: '2rem',
+  width: 'auto',
+  padding: '10px',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+}));
+
+const UserLogo = styled.div(() => ({
+  marginRight: '10px',
+  width : '2.7rem',
+  height : '2.7rem',
+  padding : '5px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderRadius : '50%',
+  backgroundColor: 'gray',
+  fontSize : '24px',
+  fontWeight: 'bolder',
+  color: 'white',
+}));
+
+const UserName = styled.div(() => ({
+  fontWeight : 'bolder',
+}));
+
+const UserEmail = styled.div(() => ({
+  display: 'flex', 
 }));
 
 const CarouselContainer = styled.div(() => ({
@@ -53,6 +86,7 @@ const Button = styled.button(() => ({
   fontSize: '20px',
   cursor: 'pointer',
   height: '50px',
+  top : '8rem',
 }));
 
 const PrevButton = styled(Button)`
@@ -69,7 +103,7 @@ const Post = ({ post }) => {
   const handleNextClick = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({
-        left: 50,
+        left: 300,
         behavior: 'smooth',
       });
     }
@@ -78,14 +112,28 @@ const Post = ({ post }) => {
   const handlePrevClick = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({
-        left: -70,
+        left: -300,
         behavior: 'smooth',
       });
     }
   };
 
+  const formatUserName = (name)=>{
+    const [firstName, lastName] = name.split(' ');
+    return `${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}`;
+  }
+
   return (
     <PostContainer>
+    <UserDetailsContainer>
+      <UserLogo >
+        {formatUserName(post.user.name)}
+      </UserLogo>
+      <div>
+        <UserName>{post.user.name}</UserName>
+        <UserEmail>{post.user.email}</UserEmail>
+      </div>
+    </UserDetailsContainer>
       <CarouselContainer>
         <Carousel ref={carouselRef}>
           {post.images.map((image, index) => (
